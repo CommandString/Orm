@@ -1,0 +1,14 @@
+{
+    "name": "commandstring/orm",
+    "description": "ORM for my PDO Driver",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "CommandString\\Orm\\": "src/"
+        }
+    },
+    "require": {
+        "commandstring/pdo": "^1.0"
+    }
+}
