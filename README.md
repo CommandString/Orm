@@ -23,4 +23,7 @@ require_once "./world/world.php"; // require database class generated
 
 $worldDatabase = new world(Driver::get()); // create instance of database driver
 $cityTable = $worldDatabase->getTable(world::CITY); // get table from database driver
+$cityRows = $cityTable->fetchAllRows(PDO::FETCH_OBJ); // Fetch all rows from the table
+
+var_dump($worldDatabase, $cityTable, $cityRows); // dump all variables created just so you can see what everything looks like
 ```
