@@ -7,7 +7,7 @@ enum BuilderFormats {
     case PRIMARY_KEY;
     case TABLE_NAME;
 
-    public static function format(BuilderFormats $format, string $toFormat): string
+    public static function format(self $format, string $toFormat): string
     {
         $formatted = "";
 
@@ -17,20 +17,20 @@ enum BuilderFormats {
                 Builder::TAB.
             "}".PHP_EOL
         ;
+        
+        $name = Builder::TAB."public const %s = \"%s\";";
 
         switch ($format) {
-            case BuilderFormats::NAME:
-                $column = Builder::TAB."public const %s = \"%s\";";
-
+            case self::NAME:
                 $formatted = strtoupper($toFormat);
                 $formatted = str_replace(" ", "_", $formatted);
                 $formatted = preg_replace("/[^a-zA-Z\d_]/", "", $formatted);
-                $formatted = sprintf($column, $formatted, $toFormat).PHP_EOL;
+                $formatted = sprintf($name, $formatted, $toFormat).PHP_EOL;
             break;
-            case BuilderFormats::PRIMARY_KEY:
+            case self::PRIMARY_KEY:
                 $formatted = sprintf($getMethod, "getPrimaryKey", $toFormat);
             break;
-            case BuilderFormats::TABLE_NAME:
+            case self::TABLE_NAME:
                 $formatted = sprintf($getMethod, "getTable", $toFormat);
             break;
         }

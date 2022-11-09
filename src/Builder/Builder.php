@@ -20,7 +20,7 @@ class Builder {
      * @param string $outputDirectory What directory to output the file in without the trailing slash
      * @return void
      */
-    public function buildTableClass(string $tableName, string $outputDirectory = ""): void
+    public function buildTableClass(string $tableName, string $outputDirectory = "", string $namespace = ""): void
     {
         $driver = $this->driver;
         $result = $driver->query("DESCRIBE {$tableName}");
@@ -28,7 +28,7 @@ class Builder {
         $columns = "";
 
         while ($row = $result->fetch(PDO::FETCH_OBJ)) {
-            $columns .= BuilderFormats::format(BuilderFormats::NAME, $row->Field);
+            $columns .= sprintf(Builder::TAB."public const %s = \"%s\";", preg_replace("/[^a-zA-Z\d_]/", "", str_replace(" ", "_", strtoupper($row->Field))), $tableName.".".$row->Field).PHP_EOL;
 
             if ($row->Key === "PRI") {
                 $primaryKey = BuilderFormats::format(BuilderFormats::PRIMARY_KEY, $row->Field);
@@ -42,15 +42,16 @@ class Builder {
         $table = BuilderFormats::format(BuilderFormats::TABLE_NAME, $tableName);
 
         $classTemplate = "<?php".PHP_EOL.
+        "%s".PHP_EOL. // namespace ?
         "class %s extends \CommandString\Orm\Table {".PHP_EOL. // Table name
             "%s".PHP_EOL. // Column Constants
             "%s". // Methods
         "}";
 
-        file_put_contents("$outputDirectory/{$tableName}.php", sprintf($classTemplate, $tableName, $columns, $primaryKey.$table));
+        file_put_contents("$outputDirectory/{$tableName}.php", sprintf($classTemplate, (!empty($namespace)) ? PHP_EOL."namespace $namespace;".PHP_EOL : "",$tableName, $columns, $primaryKey.$table));
     }
 
-    public function buildDatabaseClass(string $outputDirectory = ""): void
+    public function buildDatabaseClass(string $outputDirectory = "", string $namespace = ""): void
     {
         $driver = $this->driver;
         
@@ -65,25 +66,33 @@ class Builder {
                 $databaseName = end($explode);
             }
 
-            $this->buildTableClass($row[0], $outputDirectory);
+            $this->buildTableClass($row[0], $outputDirectory, $namespace);
         }
         
         $requireStatementTemplate = "require_once __DIR__.\"/%s.php\";".PHP_EOL;
         $tableObjectTemplate = "(new %s(\$driver)), ";
         $tableConstantTemplate = self::TAB."public const %s = \"%s\";".PHP_EOL;
-        $requireStatements = $tableObjects = $tableConstants = "";
+        $phpDocTagTemplate = " * @property-read %s $%s".PHP_EOL;
+        $requireStatements = $phpDocTags = $tableObjects = $tableConstants = "";
 
         foreach ($tableNames as $tableName) {
-            $requireStatements .= sprintf($requireStatementTemplate, $tableName);
+            if (empty($namespace)) {
+                $requireStatements .= sprintf($requireStatementTemplate, $tableName);
+            }
+
             $tableObjects .= sprintf($tableObjectTemplate, $tableName);
             $tableConstants .= BuilderFormats::format(BuilderFormats::NAME, $tableName);
+            $phpDocTags .= sprintf($phpDocTagTemplate, $tableName, $tableName);
         }
 
         $tableObjects = substr($tableObjects, 0, -2);
 
-        $classTemplate = "<?php".PHP_EOL.
+        $classTemplate = "<?php".PHP_EOL.PHP_EOL.
+        "%s".PHP_EOL.PHP_EOL. // require statements OR namespace
         "use CommandString\Pdo\Driver;".PHP_EOL.PHP_EOL.
-        "%s".PHP_EOL. // require statements OR namespace
+        "/**".PHP_EOL. ####################
+        "%s".          #   PHP Doc Tags   #
+        " */".PHP_EOL. ####################
         "class %s extends \CommandString\Orm\Database {".PHP_EOL. // Database name
             "%s".PHP_EOL. // Table constants
             self::TAB."public function __construct(Driver \$driver) {".PHP_EOL.
@@ -91,6 +100,6 @@ class Builder {
             self::TAB."}".PHP_EOL.
         "}";
 
-        file_put_contents("$outputDirectory/{$databaseName}.php", sprintf($classTemplate, $requireStatements, $databaseName, $tableConstants, $tableObjects));
+        file_put_contents("$outputDirectory/{$databaseName}.php", sprintf($classTemplate, (empty($namespace)) ? $requireStatements : "namespace $namespace;", $phpDocTags, $databaseName, $tableConstants, $tableObjects));
     }
 }
