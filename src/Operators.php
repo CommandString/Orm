@@ -46,4 +46,9 @@ class Operators {
         $oClass = new \ReflectionClass(__CLASS__);
         return $oClass->getConstants();
     }
+
+    public static function isValidOperator(string $operator): bool
+    {
+        return in_array($operator, Operators::getOperators());
+    }
 }
