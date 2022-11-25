@@ -3,7 +3,7 @@
 namespace CommandString\Orm\Statements;
 
 use CommandString\Orm\Statements\Traits\Columns;
-use CommandString\Orm\Statements\Traits\Limit;
+use CommandString\Orm\Statements\Traits\LimitOffset;
 use CommandString\Orm\Statements\Traits\Where;
 use PDOStatement;
 
@@ -11,7 +11,7 @@ class Select {
     use Statement;
     use Where;
     use Columns;
-    use Limit;
+    use LimitOffset;
     private string $table;
 
     public function from(string $table): self
@@ -40,6 +40,8 @@ class Select {
         $this->buildWheres($query); 
 
         $this->buildLimit($query);
+
+        $this->buildOffset($query);
 
         $this->query = $query;
 
