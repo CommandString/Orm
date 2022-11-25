@@ -40,4 +40,10 @@ class Operators {
     public const NOT                        = "NOT";
     public const OR                         = "OR";
     public const SOME                       = "SOME";
+    
+    public static function getOperators(): array
+    {
+        $oClass = new \ReflectionClass(__CLASS__);
+        return $oClass->getConstants();
+    }
 }
