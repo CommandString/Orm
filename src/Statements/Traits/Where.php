@@ -2,12 +2,22 @@
 
 namespace CommandString\Orm\Statements\Traits;
 
+use CommandString\Orm\Operators;
+use Exception;
+
 trait Where {
     private array $wheres = [];
 
-    public function where(string $name, mixed $value): self
+    public function where(string $name, string $operator, mixed $value): self
     {
-        $this->wheres[$name] = $value;
+        if (!in_array($operator, Operators::getOperators())) {
+            throw new Exception("$operator is an invalid operator, check \CommandString\Orm\Operators for a list of valid operators!");
+        }
+
+        $this->wheres[$name] = [
+            "operator" => $operator,
+            "value" => $value
+        ];
 
         return $this;
     }
@@ -16,7 +26,10 @@ trait Where {
     {
         if (!empty($this->wheres)) {
             $i = 0;
-            foreach ($this->wheres as $name => $value) {
+            foreach ($this->wheres as $name => $options) {
+                $value = $options["value"];
+                $operator = $options["operator"];
+
                 if ($i) {
                     $query .= " AND";
                 } else {
@@ -25,7 +38,7 @@ trait Where {
 
                 $id = $this->generateId();
 
-                $query .= " WHERE $name = :$id";
+                $query .= " WHERE $name $operator :$id";
 
                 $this->addParam($id, $value);
             }
