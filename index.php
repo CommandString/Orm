@@ -3,6 +3,7 @@
 require_once __DIR__."/vendor/autoload.php";
 
 use CommandString\Orm\Database\City;
+use CommandString\Orm\Operators;
 use CommandString\Orm\Orm;
 use CommandString\Pdo\Driver;
 
@@ -23,7 +24,7 @@ $orm->build([
 
 $city = (new City($driver));
 
-$query = $city->select()->columns([City::ID => "city_id"], City::NAME)->limit(5)->where(City::ID, 5);
+$query = $city->select()->where(City::ID, Operators::GREATER_THAN, 5)->columns([City::ID => "city_id"], City::NAME)->limit(10)->offset(0);
 
 echo "$query\n\n";
 
