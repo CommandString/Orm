@@ -1,0 +1,15 @@
+{
+    "name": "commandstring/orm",
+    "description": "An ORM built off my PDO driver",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "CommandString\\Orm\\": "src/"
+        }
+    },
+    "require": {
+        "commandstring/pdo": "^1.0",
+        "nette/php-generator": "^4.0"
+    }
+}
