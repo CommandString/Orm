@@ -10,7 +10,7 @@ trait Where {
 
     public function where(string $name, string $operator, mixed $value): self
     {
-        if (!in_array($operator, Operators::getOperators())) {
+        if (!Operators::isValidOperator($operator)) {
             throw new Exception("$operator is an invalid operator, check \CommandString\Orm\Operators for a list of valid operators!");
         }
 
