@@ -2,6 +2,7 @@
 
 namespace CommandString\Orm;
 
+use CommandString\Orm\Database\Database;
 use CommandString\Orm\Traits\NeedPdoDriver;
 use Composer\Autoload\ClassLoader;
 use Nette\PhpGenerator\ClassType;
@@ -13,30 +14,66 @@ class Builder {
     
     use NeedPdoDriver;
 
-    public function Table(string $table) {
+    public function table(string $table) {
         $this->checkReqOptions();
 
         $file = new PhpFile();
-        $loweredName = strtolower($table);
+        $loweredName = preg_replace("/[-]/", "_", strtolower($table));
         $properName = ucfirst($loweredName);
         
-        if ($this->getOption("namespace") !== null) {
-            $namespace = $file->addNamespace($this->getOption("namespace"));
-        }
+        $namespace = $file->addNamespace($this->getOption("namespace"));
 
-        $class = (isset($namespace)) ? $namespace->addClass($properName) : $file->addClass($properName);
-        $class->setExtends("\CommandString\Orm\Table");
+        $class = $namespace->addClass($properName);
+        $class->setExtends("\CommandString\Orm\Database\Table");
         $class->addProperty("name", $loweredName)->setType("string")->setVisibility("public");
 
         $this->driver->query("DESCRIBE {$table}")->execute();
 
         while ($row = $this->driver->fetch(PDO::FETCH_OBJ)) {
-            $class->addConstant(strtoupper($row->Field), strtolower("{$table}.{$row->Field}"));
+            $class->addConstant(preg_replace("/[-]/", "_", strtoupper($row->Field)), strtolower("{$table}.{$row->Field}"));
         }
 
-        if (isset($namespace)) {
-            $file->addNamespace($namespace);
+        $file->addNamespace($namespace);
+
+        file_put_contents($this->getOption("output")."/$properName.php", (string)$file);
+    }
+
+    public function tables(string|array ...$tables): array
+    {
+        $this->driver->query("SHOW TABLES")->execute();
+
+        $tablesBuilt = [];
+
+        while ($row = $this->driver->fetch()) {
+            if (empty($tables) || in_array($row[0], $tables)) {
+                $this->table($row[0]);
+                $tablesBuilt[] = $row[0];
+            }
         }
+
+        return $tablesBuilt;
+    }
+
+    public function database(string $database, array $tables = [])
+    {
+        $this->checkReqOptions();
+
+        $file = new PhpFile();
+        $loweredName = strtolower($database);
+        $properName = ucfirst($loweredName);
+
+        $tables = $this->tables();
+        
+        $file = new PhpFile();
+        $namespace = $file->addNamespace($this->getOption("namespace"));
+        $class = $namespace->addClass($properName);
+        $class->setExtends("\CommandString\Orm\Database\Database");
+
+        foreach ($tables as $table) {
+            $class->addConstant(strtoupper($table), strtolower($table));
+        }
+        
+        $file->addNamespace($namespace);
 
         file_put_contents($this->getOption("output")."/$properName.php", (string)$file);
     }
@@ -44,7 +81,8 @@ class Builder {
     private function checkReqOptions(): void
     {
         $requiredOptions = [
-            "output"
+            "output",
+            "namespace"
         ];
 
         foreach ($requiredOptions as $option) {
