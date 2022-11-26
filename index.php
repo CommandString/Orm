@@ -2,15 +2,15 @@
 
 require_once __DIR__."/vendor/autoload.php";
 
-use CommandString\Orm\Database\City;
-use CommandString\Orm\Operators;
+use CommandString\Orm\Database\Accounts;
+use CommandString\Orm\Database\Books_over_coffee;
 use CommandString\Orm\Orm;
 use CommandString\Pdo\Driver;
 
 $driver = (new Driver())
 	->withUsername("admin")
 	->withPassword("password")
-	->withDatabase("world")
+	->withDatabase("books_over_coffee")
 	->withHost("127.0.0.1")
 	->connect()
 ;
@@ -19,15 +19,12 @@ $orm = new Orm($driver);
 
 $orm->build([
     "output" => __DIR__."/src/Database",
-    "namespace" => "CommandString\\Orm\\Database"
+    "namespace" => "CommandString\\Orm\\Database",
+	"database" => "Books_over_coffee"
 ]);
 
-$city = (new City($driver));
+$database = (new Books_over_coffee($driver))->initializeDatabase();
 
-$query = $city->select()->where(City::ID, Operators::GREATER_THAN, 5)->columns([City::ID => "city_id"], City::NAME)->limit(10)->offset(0);
+$query = $database->tables->accounts->select()->columns(Accounts::ID, accounts::EMAIL)->limit(2)->execute();
 
-echo "$query\n\n";
-
-$results = $query->execute()->fetchAll(PDO::FETCH_OBJ);
-
-var_dump($results);
+var_dump($query->fetchAll(PDO::FETCH_OBJ));
