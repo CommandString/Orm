@@ -1,6 +1,6 @@
 <?php
 
-namespace CommandString\Orm;
+namespace CommandString\Orm\Database;
 
 use CommandString\Orm\Statements\Select;
 use CommandString\Orm\Statements\Statement;
@@ -10,7 +10,7 @@ use PDOStatement;
 abstract class Table {
     use NeedPdoDriver;
 
-    public string $name;
+    public readonly string $name;
 
     public function select(): Select
     {
