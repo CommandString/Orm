@@ -5,7 +5,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "CommandString\\Orm\\": "src/"
+            "CommandString\\Orm\\": "src/",
+            "CommandString\\Utils\\": "utils/"
         }
     },
     "require": {
