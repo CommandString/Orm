@@ -14,6 +14,10 @@ class Orm {
             $builder->setOption($name, $value);
         }
 
-        $builder->table("city");
+        if ($builder->getOption("database") !== null) {
+            $builder->database($builder->getOption("database"));
+        } else if ($builder->getOption("tables") !== null) {
+            $builder->tables($builder->getOption("tables"));
+        }
     }
 }
