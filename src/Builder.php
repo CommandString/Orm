@@ -75,13 +75,13 @@ class Builder {
         
         $file->addNamespace($namespace);
 
-        file_put_contents($this->getOption("output")."/$properName.php", (string)$file);
+        file_put_contents($this->getOption("output-dir")."/$properName.php", (string)$file);
     }
 
     private function checkReqOptions(): void
     {
         $requiredOptions = [
-            "output",
+            "output-dir",
             "namespace"
         ];
 
