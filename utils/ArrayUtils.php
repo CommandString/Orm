@@ -5,26 +5,22 @@ namespace CommandString\Utils;
 use stdClass;
 
 class ArrayUtils {
-    public static function toStdClass(array &$array)
+    public static function toStdClass(array $array): stdClass
     {
-        $stdClass = new stdClass();
+        $toStdClass = function (array $array, callable $toStdClass) {
+            $stdClass = new stdClass();
 
-        $toStdClass = function (array &$array, $toStdClass) use ($stdClass) {
             foreach ($array as $key => $value) {
                 if (is_array($value)) {
-                    foreach (array_keys($value) as $valueKey) {
-                        if (!is_int($valueKey)) {
-                            $value = $toStdClass($value);
-                        }
-                    }
+                    $value = $toStdClass($value, $toStdClass);
                 }
 
                 $stdClass->$key = $value;
             }
 
-            $array = $stdClass;
+            return $stdClass;
         };
 
-        $toStdClass($array, $toStdClass);
+        return $toStdClass($array, $toStdClass);
     }
 }
