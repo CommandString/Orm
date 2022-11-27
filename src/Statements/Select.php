@@ -7,7 +7,7 @@ use CommandString\Orm\Statements\Traits\LimitOffset;
 use CommandString\Orm\Statements\Traits\Where;
 use PDOStatement;
 
-class Select {
+final class Select {
     use Statement;
     use Where;
     use Columns;
