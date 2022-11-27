@@ -24,24 +24,22 @@ trait Where {
 
     private function buildWheres(string &$query)
     {
-        if (!empty($this->wheres)) {
-            $i = 0;
-            foreach ($this->wheres as $name => $options) {
-                $value = $options["value"];
-                $operator = $options["operator"];
+        $i = 0;
+        foreach ($this->wheres as $name => $options) {
+            $value = $options["value"];
+            $operator = $options["operator"];
 
-                if ($i) {
-                    $query .= " AND";
-                } else {
-                    $i++;
-                }
-
-                $id = $this->generateId();
-
-                $query .= " WHERE $name $operator :$id";
-
-                $this->addParam($id, $value);
+            if ($i) {
+                $query .= " AND";
+            } else {
+                $i++;
             }
+
+            $id = $this->generateId();
+
+            $query .= " WHERE $name $operator :$id";
+
+            $this->addParam($id, $value);
         }
     }
 }
