@@ -40,7 +40,7 @@ class Builder {
 
         $tablesBuilt = [];
 
-        while ($row = $this->driver->fetch()) {
+        foreach ($this->driver->fetchAll() as $row) {
             if (empty($tables) || in_array($row[0], $tables)) {
                 $this->table($row[0]);
                 $tablesBuilt[] = $row[0];
