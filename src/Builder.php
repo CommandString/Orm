@@ -2,10 +2,7 @@
 
 namespace CommandString\Orm;
 
-use CommandString\Orm\Database\Database;
 use CommandString\Orm\Traits\NeedPdoDriver;
-use Composer\Autoload\ClassLoader;
-use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use PDO;
 
@@ -25,7 +22,6 @@ class Builder {
 
         $class = $namespace->addClass($properName);
         $class->setExtends("\CommandString\Orm\Database\Table");
-        $class->addProperty("name", $loweredName)->setType("string")->setVisibility("public");
 
         $this->driver->query("DESCRIBE {$table}")->execute();
 
@@ -35,7 +31,7 @@ class Builder {
 
         $file->addNamespace($namespace);
 
-        file_put_contents($this->getOption("output")."/$properName.php", (string)$file);
+        file_put_contents($this->getOption("output-dir")."/$properName.php", (string)$file);
     }
 
     public function tables(string|array ...$tables): array
@@ -72,7 +68,7 @@ class Builder {
         foreach ($tables as $table) {
             $class->addConstant(strtoupper($table), strtolower($table));
         }
-        
+
         $file->addNamespace($namespace);
 
         file_put_contents($this->getOption("output-dir")."/$properName.php", (string)$file);
