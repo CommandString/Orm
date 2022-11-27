@@ -6,7 +6,7 @@ A low level PDO orm
     - PHP 8.1<=
     - commandstring/pdo
     - PDO extension enabled
-    - MysSQL database connection
+    - MySQL database connection
     - PHP OOP Knowledge
     - MySQL knowledge
 
