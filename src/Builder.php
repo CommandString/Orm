@@ -10,6 +10,8 @@ class Builder {
     private array $options = [];
     
     use NeedPdoDriver;
+    public const OUTPUT_DIR = "output_dir";
+    public const NAMESPACE = "namespace";
 
     public function table(string $table) {
         $this->checkReqOptions();
@@ -18,7 +20,7 @@ class Builder {
         $loweredName = preg_replace("/[-]/", "_", strtolower($table));
         $properName = ucfirst($loweredName);
         
-        $namespace = $file->addNamespace($this->getOption("namespace"));
+        $namespace = $file->addNamespace($this->getOption(self::NAMESPACE));
 
         $class = $namespace->addClass($properName);
         $class->setExtends("\CommandString\Orm\Database\Table");
@@ -31,7 +33,7 @@ class Builder {
 
         $file->addNamespace($namespace);
 
-        file_put_contents($this->getOption("output-dir")."/$properName.php", (string)$file);
+        file_put_contents($this->getOption(self::OUTPUT_DIR)."/$properName.php", (string)$file);
     }
 
     public function tables(string|array ...$tables): array
@@ -41,7 +43,7 @@ class Builder {
         $tablesBuilt = [];
 
         foreach ($this->driver->fetchAll() as $row) {
-            if (empty($tables) || in_array($row[0], $tables)) {
+            if (empty($tables) || in_array(strtolower($row[0]), $tables)) {
                 $this->table($row[0]);
                 $tablesBuilt[] = $row[0];
             }
@@ -61,7 +63,7 @@ class Builder {
         $tables = $this->tables();
         
         $file = new PhpFile();
-        $namespace = $file->addNamespace($this->getOption("namespace"));
+        $namespace = $file->addNamespace($this->getOption(self::NAMESPACE));
         $class = $namespace->addClass($properName);
         $class->setExtends("\CommandString\Orm\Database\Database");
 
@@ -71,14 +73,14 @@ class Builder {
 
         $file->addNamespace($namespace);
 
-        file_put_contents($this->getOption("output-dir")."/$properName.php", (string)$file);
+        file_put_contents($this->getOption(self::OUTPUT_DIR)."/$properName.php", (string)$file);
     }
 
     private function checkReqOptions(): void
     {
         $requiredOptions = [
-            "output-dir",
-            "namespace"
+            self::OUTPUT_DIR,
+            self::NAMESPACE
         ];
 
         foreach ($requiredOptions as $option) {
