@@ -23,9 +23,7 @@ trait Statement {
         return $this;
     }
 
-    abstract public function build(): string;
-    
-    abstract public function execute(): PDOStatement;
+    abstract protected function build(): string;
 
     public function __toString(): string
     {
@@ -50,5 +48,20 @@ trait Statement {
         }
 
         return $id;
+    }
+    
+    public function execute(): PDOStatement
+    {
+        $this->driver->prepare($this);
+        
+        if (!empty($this->parameters)) {
+            foreach ($this->parameters as $id => $value) {
+                $this->driver->bindValue($id, $value);
+            }
+        }
+
+        $this->driver->execute();
+
+        return $this->driver->statement;
     }
 }

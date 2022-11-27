@@ -21,7 +21,7 @@ final class Select {
         return $this;
     }
 
-    public function build(): string
+    protected function build(): string
     {
         if (isset($this->query)) {
             return $this->query;
@@ -46,21 +46,5 @@ final class Select {
         $this->query = $query;
 
         return $query;
-    }
-
-    public function execute(): PDOStatement
-    {
-        $this->driver->prepare($this);
-        
-        if (!empty($this->parameters)) {
-            foreach ($this->parameters as $id => $value) {
-                echo "$id:$value\n";
-                $this->driver->bindValue($id, $value);
-            }
-        }
-
-        $this->driver->execute();
-
-        return $this->driver->statement;
     }
 }
