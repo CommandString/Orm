@@ -75,10 +75,28 @@ $users = [
     "token" => "********************************"
 ];
 
-ArrayUtils::toStdClass($users);
+$users = ArrayUtils::toStdClass($users);
 
-var_dump($users); // output: stdClass
-
-var_dump($users->value->users[0]); // output: stdClass
-var_dump($users->value->users[0]->user); // output: user
+var_dump($users);
+/* output
+object(stdClass)#2 (2) {
+    ["value"]=>
+    object(stdClass)#4 (1) {
+        ["users"]=>
+        object(stdClass)#5 (1) {
+        ["0"]=>
+        object(stdClass)#6 (3) {
+            ["username"]=>
+            string(4) "user"
+            ["password"]=>
+            string(8) "********"
+            ["email"]=>
+            string(16) "user@example.com"
+        }
+        }
+    }
+    ["token"]=>
+    string(32) "********************************"
+}
+*/
 ```
