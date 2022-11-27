@@ -1,6 +1,6 @@
 # commandstring/orm #
 
-An low level PDO orm
+A low level PDO orm
 
 # Requirements: #
     - PHP 8.1<=
