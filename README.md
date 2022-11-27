@@ -6,7 +6,7 @@ A low level PDO orm
     - PHP 8.1<=
     - commandstring/pdo
     - PDO extension enabled
-    - Mysql database connection
+    - MysSQL database connection
     - PHP OOP Knowledge
     - MySQL knowledge
 
@@ -42,8 +42,9 @@ $orm->build([
 ```
 
 ## Initialize Database
+
 ```php
-$database = (new Books_over_coffee($driver))->initializeDatabase();
+$database = (new Books_over_coffee($driver));
 ```
 
 ## Use intellisense to build SQL queries ##
@@ -57,10 +58,30 @@ $query = $database->tables->accounts
 var_dump($query->fetchAll(PDO::FETCH_OBJ));
 ```
 
+---
+
+# No need to generate database/table classes
+
+```php
+/**
+ * @var \CommandString\Orm\Statements\Select
+ */
+$selectQuery = new Select($driver)->columns("username")->from("users")->where("id", "=", 5);
+
+echo $selectQuery; // output: SELECT username FROM users WHERE id = :random-id-here
+
+/**
+ * @var \PDOStatement
+ */
+$results = $selectQuery->execute();
+```
+
+---
+
 # CommandString/Utils #
 Basic utility functions for PHP
 
-## ArrayUtils::toStdClass(array &$array) ##
+## ArrayUtils::toStdClass() ##
 ```php
 $users = [
     "value" => [
