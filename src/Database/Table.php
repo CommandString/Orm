@@ -2,6 +2,7 @@
 
 namespace CommandString\Orm\Database;
 
+use CommandString\Orm\Statements\Delete;
 use CommandString\Orm\Statements\Insert;
 use CommandString\Orm\Statements\Select;
 use CommandString\Orm\Traits\NeedPdoDriver;
@@ -30,5 +31,10 @@ abstract class Table {
     public function insert(): Insert
     {
         return (new Insert($this->driver))->into($this->name);
+    }
+
+    public function delete(): Delete
+    {
+        return (new Delete($this->driver))->from($this->name);
     }
 }
