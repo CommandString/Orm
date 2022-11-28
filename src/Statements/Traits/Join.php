@@ -7,18 +7,18 @@ use Exception;
 trait Join {    
     private string $column1;
     private string $column2;
-    private string $direction;
+    private string $type;
     private string $tableToJoin;
 
-    private function join(string $direction, string $tableToJoin): self
+    private function join(string $type, string $tableToJoin): self
     {
-        $direction = strtoupper($direction);
+        $direction = strtoupper($type);
 
-        if (!in_array($direction, ["LEFT", "RIGHT"])) {
+        if (!in_array($direction, ["LEFT", "RIGHT", "FULL", "SELF"])) {
             throw new Exception("Direction must be LEFT or RIGHT!");
         }
 
-        $this->direction = $direction;
+        $this->type = $type;
         $this->tableToJoin = $tableToJoin;
 
         return $this;
