@@ -3,21 +3,14 @@
 namespace CommandString\Orm;
 
 use CommandString\Orm\Traits\NeedPdoDriver;
+use CommandString\Pdo\Driver;
 
 class Orm {
-    use NeedPdoDriver;
+    public readonly Driver $driver;
+    public readonly Builder $builder;
 
-    public function build(array $options = []) {
-        $builder = new Builder($this->driver);
-
-        foreach ($options as $name => $value) {
-            $builder->setOption($name, $value);
-        }
-
-        if ($builder->getOption("database") !== null) {
-            $builder->database($builder->getOption("database"));
-        } else if ($builder->getOption("tables") !== null) {
-            $builder->tables($builder->getOption("tables"));
-        }
+    public function __construct(Driver $driver) {
+        $this->driver = NeedPdoDriver::checkDriver($driver);
+        $this->builder = new Builder($this->driver);
     }
 }
