@@ -10,6 +10,7 @@ trait Statement {
     use NeedPdoDriver;
     private array $parameters = [];
     private string $query;
+    private string $table;
 
     public function getParameters(): array
     {
@@ -63,5 +64,12 @@ trait Statement {
         $this->driver->execute();
 
         return $this->driver->statement;
+    }
+
+    public function table(string $table): self
+    {
+        $this->table = $table;
+
+        return $this;
     }
 }
