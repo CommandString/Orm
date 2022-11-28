@@ -5,6 +5,7 @@ namespace CommandString\Orm\Statements;
 use CommandString\Orm\Statements\Traits\Columns;
 use CommandString\Orm\Statements\Traits\Join;
 use CommandString\Orm\Statements\Traits\LimitOffset;
+use CommandString\Orm\Statements\Traits\OrderBy;
 use CommandString\Orm\Statements\Traits\Where;
 
 final class Select {
@@ -13,13 +14,11 @@ final class Select {
     use Columns;
     use LimitOffset;
     use Join;
-    private string $table;
+    use OrderBy;
 
     public function from(string $table): self
     {
-        $this->table = $table;
-
-        return $this;
+        return $this->table($table);
     }
 
     protected function build(): string
@@ -38,6 +37,8 @@ final class Select {
         $this->buildOn($query);
         
         $this->buildWheres($query);
+
+        $this->buildOrderBy($query);
 
         $this->buildLimit($query);
         $this->buildOffset($query);
