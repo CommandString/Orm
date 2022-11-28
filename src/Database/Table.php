@@ -19,7 +19,7 @@ abstract class Table {
     private function getName(): string
     {   
         $parts = explode("\\", get_called_class());
-        return $parts[count($parts)-1];
+        return strtolower($parts[count($parts)-1]);
     }
 
     public function select(): Select
