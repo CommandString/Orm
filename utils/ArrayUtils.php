@@ -23,4 +23,9 @@ class ArrayUtils {
 
         return $toStdClass($array, $toStdClass);
     }
+
+    public static function getLastItem(array $array): mixed
+    {
+        return $array[array_keys($array)[count($array)-1]];
+    }
 }
