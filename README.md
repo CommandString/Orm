@@ -47,7 +47,7 @@ $orm->build([
 $database = (new Books_over_coffee($driver));
 ```
 
-## Use intellisense to build SQL queries ##
+## Use build SQL query programmatically and execute ##
 ```php
 $query = $database->tables->accounts
     ->select()
