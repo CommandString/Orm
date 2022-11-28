@@ -3,48 +3,22 @@
 
 namespace CommandString\Orm\Statements;
 
+use CommandString\Orm\Statements\Traits\Values;
+
 final class Insert {
     use Statement;
+    use Values;
 
-    private string $tableName = "";
-    private array $values = [];
-
-    public function values(array $values): self
+    public function into(string $table): self
     {
-        foreach ($values as $column => $value) {
-            $this->values[$column] = $value;
-        }
-
-        return $this;
-    }
-
-    public function into(string $tableName): self
-    {
-        $this->tableName = $tableName;
-
-        return $this;
-    }
-
-    public function buildValues(string &$query) {
-        $query .= "(";
-        $values = ") VALUES (";
-        foreach ($this->values as $column => $value) {
-            $id = $this->generateId();
-            $values .= ":$id, ";
-
-            $this->addParam($id, $value);
-
-            $query .= "$column, ";
-        }
-
-        $query = substr($query, 0, -2).substr($values, 0, -2).")";
+        return $this->table($table);
     }
 
     protected function build(): string
     {
         $this->parameters = [];
 
-        $query = "INSERT INTO {$this->tableName} ";
+        $query = "INSERT INTO {$this->table} ";
 
         $this->buildValues($query);
 
