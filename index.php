@@ -3,11 +3,11 @@
 require_once __DIR__."/vendor/autoload.php";
 
 use CommandString\Orm\Builder;
-use CommandString\Orm\Database\Test\Classes;
-use CommandString\Orm\Database\Test\Teachers;
+use CommandString\Orm\Database\Test\Students;
 use CommandString\Orm\Database\Test\Testing;
 use CommandString\Orm\Operators;
 use CommandString\Pdo\Driver;
+use CommandString\Utils\GeneratorUtils;
 
 $driver = (new Driver())
 	->withUsername("admin")
@@ -26,15 +26,3 @@ $builder
 ;
 
 $database = new Testing($driver);
-
-$results = $database->tables->classes
-	->select()
-	->columns([Teachers::F_NAME => "first_name"], [Teachers::L_NAME => "last_name"], Classes::NAME)
-	->leftJoin(Testing::TEACHERS)
-	->on(Teachers::ID, Classes::TEACHER_ID)
-	->where(Classes::ID, Operators::EQUAL_TO, 1)
-;
-
-echo $results;
-
-var_dump($results->execute()->fetch(PDO::FETCH_OBJ));
