@@ -34,7 +34,7 @@ trait Join {
         return $this->join("RIGHT", $tableToJoin);
     }
 
-    public function buildJoin(string &$query) {
+    private function buildJoin(string &$query) {
         if (isset($this->direction)) {
             $query .= " LEFT JOIN {$this->tableToJoin}";
         }
@@ -48,7 +48,11 @@ trait Join {
         return $this;
     }
 
-    public function buildOn(string &$query) {
+    private function buildOn(string &$query) {
+        if (!isset($this->column1) || !isset($this->column2)) {
+            return;
+        }
+
         $query .= " ON {$this->column1} = {$this->column2}";
     }
 }

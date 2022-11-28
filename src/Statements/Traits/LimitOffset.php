@@ -26,7 +26,7 @@ trait LimitOffset {
         return $this;
     }
 
-    public function buildOffset(&$query) {
+    private function buildOffset(&$query) {
         if ($this->offset > -1) {
             $query .= " OFFSET {$this->offset}";
         }
