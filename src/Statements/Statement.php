@@ -37,12 +37,7 @@ trait Statement {
     }
 
     private function generateId(): string {
-        $characters = array_merge(range("A", "Z"), range("a", "z"));
-        $id = "";
-
-        for ($i = 0; $i <= 16; $i++) {
-            $id .= $characters[rand(0, count($characters)-1)];
-        }
+        $id = \CommandString\Utils\GeneratorUtils::uuid();
 
         if (in_array($id, array_keys($this->parameters))) { // in the crazy case that there is a collision
             return $this->generateId();
