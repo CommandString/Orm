@@ -3,15 +3,16 @@
 namespace CommandString\Orm\Statements;
 
 use CommandString\Orm\Statements\Traits\Columns;
+use CommandString\Orm\Statements\Traits\Join;
 use CommandString\Orm\Statements\Traits\LimitOffset;
 use CommandString\Orm\Statements\Traits\Where;
-use PDOStatement;
 
 final class Select {
     use Statement;
     use Where;
     use Columns;
     use LimitOffset;
+    use Join;
     private string $table;
 
     public function from(string $table): self
@@ -24,23 +25,21 @@ final class Select {
     protected function build(): string
     {
         if (isset($this->query)) {
-            return $this->query;
+            $this->parameters = [];
         }
 
         $query = "SELECT";
 
         $this->buildColumns($query);     
 
-        if (isset($this->table)) {
-            $query .= " FROM {$this->table}";
-        } else {
-            throw new \Exception("You must define the table you want to select from!");
-        }
+        $query .= " FROM {$this->table}";
+
+        $this->buildJoin($query);
+        $this->buildOn($query);
         
-        $this->buildWheres($query); 
+        $this->buildWheres($query);
 
         $this->buildLimit($query);
-
         $this->buildOffset($query);
 
         $this->query = $query;
