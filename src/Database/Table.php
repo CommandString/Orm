@@ -2,11 +2,10 @@
 
 namespace CommandString\Orm\Database;
 
+use CommandString\Orm\Statements\Insert;
 use CommandString\Orm\Statements\Select;
-use CommandString\Orm\Statements\Statement;
 use CommandString\Orm\Traits\NeedPdoDriver;
 use CommandString\Pdo\Driver;
-use PDOStatement;
 
 abstract class Table {
     public readonly Driver $driver;
@@ -28,8 +27,8 @@ abstract class Table {
         return (new Select($this->driver))->from($this->name);
     }
 
-    public function executeStatement(Statement $statement): PDOStatement
+    public function insert(): Insert
     {
-        return $statement->execute();
+        return (new Insert($this->driver))->into($this->name);
     }
 }
