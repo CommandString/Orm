@@ -34,16 +34,14 @@ $driver = (new \CommandString\Pdo\Driver())
 ;
 ```
 
-## Create ORM object ##
+## Build your database ##
 
 ```php
-$orm = new Orm($driver);
-
-$orm->build([
-    "output" => __DIR__."/src/Database", // change this
-    "namespace" => "CommandString\\Orm\\Database", // change this
-	"database" => "Books_over_coffee"
-]);
+(new Builder($driver))
+    ->setOption(Builder::NAMESPACE, "CommandString\\Database") // change
+    ->setOption(Builder::OUTPUT_DIR, __DIR__."/database") // change
+    ->database("penny")
+;
 ```
 
 ## Initialize Database
@@ -114,10 +112,17 @@ $results = $selectQuery->execute();
 (new Update($driver))
     ->table("table")
     ->set("column", "newValue")
-    ->where("column", "value")
+    ->where("column", "=", "value")
 ;
 ```
 
+## Delete
+
+```php
+(new Delete($driver))
+    ->from("table")
+    ->where("column", "=", "value")
+```
 # Additional Notes
 
 ## Proper where usage
