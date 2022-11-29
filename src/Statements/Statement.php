@@ -12,11 +12,23 @@ trait Statement {
     private string $query;
     private string $table;
 
+    /**
+     * Retrieve Parameters
+     *
+     * @return array
+     */
     public function getParameters(): array
     {
         return $this->parameters;
     }
 
+    /**
+     * Store parameter
+     *
+     * @param string $name
+     * @param integer|string $value
+     * @return self
+     */
     private function addParam(string $name, int|string $value): self
     {
         $this->parameters[$name] = $value;
@@ -24,6 +36,11 @@ trait Statement {
         return $this;
     }
 
+    /**
+     * Build SQL Query
+     *
+     * @return string
+     */
     abstract protected function build(): string;
 
     public function __toString(): string
@@ -31,11 +48,22 @@ trait Statement {
         return $this->build();
     }
 
+    /**
+     * Shorthand creation
+     *
+     * @param Driver $driver
+     * @return self
+     */
     public static function new(Driver $driver): self
     {
         return new self($driver);
     }
 
+    /**
+     * Generate a parameter id
+     *
+     * @return string
+     */
     private function generateId(): string {
         $id = \CommandString\Utils\GeneratorUtils::uuid();
 
@@ -46,6 +74,11 @@ trait Statement {
         return $id;
     }
     
+    /**
+     * Execute query
+     *
+     * @return PDOStatement
+     */
     public function execute(): PDOStatement
     {
         $this->driver->prepare($this);
@@ -61,6 +94,12 @@ trait Statement {
         return $this->driver->statement;
     }
 
+    /**
+     * Set the table the SQL query will be performed upon
+     *
+     * @param string $table
+     * @return self
+     */
     public function table(string $table): self
     {
         $this->table = $table;

@@ -41,12 +41,23 @@ class Operators {
     public const OR                         = "OR";
     public const SOME                       = "SOME";
     
+    /**
+     * Get list of operators defined here
+     *
+     * @return array
+     */
     public static function getOperators(): array
     {
         $oClass = new \ReflectionClass(__CLASS__);
         return $oClass->getConstants();
     }
 
+    /**
+     * Checks if an operator supplied exists
+     *
+     * @param string $operator
+     * @return boolean
+     */
     public static function isValidOperator(string $operator): bool
     {
         return in_array($operator, Operators::getOperators());

@@ -7,12 +7,9 @@ use CommandString\Pdo\Driver;
 use ReflectionClass;
 use stdClass;
 
-/**
- * @property-read $tables
- */
 abstract class Database {
     public readonly Driver $driver;
-    public readonly stdClass $tables;
+    private stdClass $tables;
     public readonly string $name;
 
     public function __construct(Driver $driver) {
@@ -22,12 +19,22 @@ abstract class Database {
         $this->buildTables();
     }    
 
+    /**
+     * Get name of database
+     *
+     * @return string
+     */
     private function getName(): string
     {   
         $parts = explode("\\", get_called_class());
         return $parts[count($parts)-1];
     }
 
+    /**
+     * Instantiate all table classes belonging to this database
+     *
+     * @return void
+     */
     private function buildTables() {
         $reflection = (new ReflectionClass(get_called_class()));
         $tables = $reflection->getConstants();
@@ -39,6 +46,12 @@ abstract class Database {
 		}
     }
 
+    /**
+     * Get table
+     *
+     * @param string $table
+     * @return Table|null
+     */
     public function getTable(string $table): ?Table
     {
         return $this->tables->$table ?? null;
