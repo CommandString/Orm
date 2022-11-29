@@ -29,10 +29,12 @@ abstract class Database {
     }
 
     private function buildTables() {
-        $tables = (new ReflectionClass(get_called_class()))->getConstants();
+        $reflection = (new ReflectionClass(get_called_class()));
+        $tables = $reflection->getConstants();
 
 		foreach ($tables as $tableName) {
-			$className = "\\".str_replace("$this->name", "", get_called_class()).ucfirst($tableName);
+            $className = $reflection->getNamespaceName()."\\".ucfirst($tableName);
+
 			$this->tables->$tableName = new $className($this->driver);
 		}
     }
