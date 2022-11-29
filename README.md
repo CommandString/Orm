@@ -26,7 +26,7 @@ A low level PDO orm
 $driver = (new \CommandString\Pdo\Driver())
 	->withUsername("admin")
 	->withPassword("password")
-	->withDatabase("books_over_coffee")
+	->withDatabase("database")
 	->withHost("127.0.0.1")
 	->connect()
 ;
@@ -38,7 +38,7 @@ $driver = (new \CommandString\Pdo\Driver())
 (new Builder($driver))
     ->setOption(Builder::NAMESPACE, "CommandString\\Database") // change
     ->setOption(Builder::OUTPUT_DIR, __DIR__."/database") // change
-    ->database("penny")
+    ->database("database")
 ;
 ```
 
