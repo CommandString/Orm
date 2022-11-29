@@ -121,13 +121,60 @@ $results = $selectQuery->execute();
     ->from("table")
     ->where("column", "=", "value")
 ```
-# Additional Notes
 
-## Proper where usage
+## Using where method
+
 ```php
 // ...
 ->where("column", "=", "value")
 ->where("column", "IN", [1, 5, "hi"])
 ->where("column", "IN", [(new Select($driver))->from("table")->columns("column")])
 ->where("column", "BETWEEN", [0, 5])
+->whereOr("column", "=", 5)
+->whereNot("column", "=", 10)
+```
+
+# Creating Storable Statements
+
+## Create storableStatement instance
+```php
+$storableStatement = (new StorableStatement("getByName"));
+```
+
+## Create statement to be stored
+```php
+$storableStatement->setStatement((new Select($driver))->from("accounts")->columns("name", "id"));
+```
+
+## Set before handler (optional)
+
+```php
+$storableStatement->setBeforeHandler(function (Select $statement, string $name): Select
+{
+    return $statement->where("name", "=", $name);
+});
+```
+The first argument is the statement passed into the setStatement method. You can define arguments that can be set when executing the statement *more on that later*.
+
+## Set after handler (optional)
+
+```php
+$storableStatement->setAfterHandler(function (PDOStatement $statement)): Account
+{
+    $results = $statement->fetch(PDO::FETCH_OBJ);
+
+    return new Account($results->name, $results->id);
+}
+```
+
+## Storing statement
+
+```php
+$database->getTable(Database::TABLENAME)->storeStatement($storableStatement);
+```
+
+## Executing stored statement
+
+```php
+$database->getTable("accounts")->getStoredStatement("name")->execute(["Command_String"]);
 ```

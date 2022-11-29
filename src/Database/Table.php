@@ -5,12 +5,14 @@ namespace CommandString\Orm\Database;
 use CommandString\Orm\Statements\Delete;
 use CommandString\Orm\Statements\Insert;
 use CommandString\Orm\Statements\Select;
+use CommandString\Orm\Statements\StorableStatement;
 use CommandString\Orm\Traits\NeedPdoDriver;
 use CommandString\Pdo\Driver;
 
 abstract class Table {
     public readonly Driver $driver;
     public readonly string $name;
+    private array $storedStatements;
     
     public function __construct(Driver $driver) {
         $this->driver = NeedPdoDriver::checkDriver($driver);
@@ -36,5 +38,17 @@ abstract class Table {
     public function delete(): Delete
     {
         return (new Delete($this->driver))->from($this->name);
+    }
+
+    public function storeStatement(StorableStatement $statement): self
+    {
+        $this->storedStatements[$statement->name] = $statement;
+
+        return $this;
+    }
+
+    public function getStoredStatement(string $name): ?StorableStatement
+    {
+        return $this->storedStatements[$name] ?? null;
     }
 }
