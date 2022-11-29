@@ -45,7 +45,7 @@ $driver = (new \CommandString\Pdo\Driver())
 ## Initialize Database
 
 ```php
-$database = (new Books_over_coffee($driver));
+$database = (new Database($driver));
 ```
 
 ## Build MySQL query programmatically and execute ##
