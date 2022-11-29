@@ -50,9 +50,9 @@ $database = (new Database($driver));
 
 ## Build MySQL query programmatically and execute ##
 ```php
-$query = $database->tables->accounts
+$query = $database->getTable(Database::TABLENAME)
     ->select()
-    ->columns(Accounts::ID, accounts::EMAIL)
+    ->columns(TableName::COLUMNNAME, TableName::COLUMNNAME)
     ->limit(2)
 ->execute();
 
