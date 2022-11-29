@@ -11,6 +11,12 @@ trait NeedPdoDriver {
         $this->driver = self::checkDriver($driver);
     }
 
+    /**
+     * Makes the PDO Driver is connected to the database, if not it will perform that action for the user
+     *
+     * @param Driver $driver
+     * @return Driver
+     */
     public static function checkDriver(Driver $driver): Driver
     {
         if (!isset($driver->driver)) {
