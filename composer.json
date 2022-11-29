@@ -10,6 +10,7 @@
     },
     "require": {
         "commandstring/pdo": "^1.0",
-        "nette/php-generator": "^4.0"
+        "nette/php-generator": "^4.0",
+        "commandstring/utils": "^1.0"
     }
 }
