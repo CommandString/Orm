@@ -11,8 +11,6 @@ A low level PDO orm
 - MySQL knowledge
 
 # Todo: #
-- Tests and possible refactoring
-- Move commandstring/utils to its own repository
 - Add [UNION](https://www.w3schools.com/mysql/mysql_union.asp)
 - Add [GROUP BY](https://www.w3schools.com/mysql/mysql_groupby.asp)
 - Add [HAVING](https://www.w3schools.com/mysql/mysql_having.asp)
