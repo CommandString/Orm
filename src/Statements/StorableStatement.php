@@ -14,6 +14,8 @@ class StorableStatement {
 
     public function setStatement(Select|Update|Delete|Insert $statement) {
         $this->statement = $statement;
+
+        return $this;
     }
 
     public function setBeforeHandler(Closure $before): self
