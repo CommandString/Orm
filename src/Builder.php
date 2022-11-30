@@ -88,7 +88,7 @@ class Builder {
         $file = new PhpFile();
         $namespace = $file->addNamespace($this->getOption(self::NAMESPACE));
         $class = $namespace->addClass($properName);
-        $class->setExtends("\CommandString\Orm\Database");
+        $class->setExtends("\CommandString\Orm\Database\Database");
 
         foreach ($tables as $table) {
             $class->addConstant(strtoupper($table), strtolower($table));
