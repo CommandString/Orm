@@ -175,5 +175,5 @@ $database->getTable(Database::TABLENAME)->storeStatement($storableStatement);
 ## Executing stored statement
 
 ```php
-$database->getTable("accounts")->getStoredStatement("name")->execute(["Command_String"]);
+$database->getTable("accounts")->getStoredStatement("getByName")->execute(["Command_String"]);
 ```
