@@ -15,7 +15,7 @@ trait Join {
         $direction = strtoupper($type);
 
         if (!in_array($direction, ["LEFT", "RIGHT", "FULL", "SELF"])) {
-            throw new Exception("Direction must be LEFT or RIGHT!");
+            throw new Exception("Direction must be LEFT, RIGHT, FULL, SELF!");
         }
 
         $this->type = $type;
@@ -34,9 +34,19 @@ trait Join {
         return $this->join("RIGHT", $tableToJoin);
     }
 
+    public function fullJoin(string $tableToJoin): self
+    {
+        return $this->join("FULL", $tableToJoin);
+    }
+
+    public function selfJoin(string $tableToJoin): self
+    {
+        return $this->join("SELF", $tableToJoin);
+    }
+
     private function buildJoin(string &$query) {
-        if (isset($this->direction)) {
-            $query .= " LEFT JOIN {$this->tableToJoin}";
+        if (isset($this->type)) {
+            $query .= " {$this->type} JOIN {$this->tableToJoin}";
         }
     }
 
