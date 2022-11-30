@@ -34,7 +34,7 @@ class StorableStatement {
 
     public function execute(array $beforeArgs = [], array $afterArgs = []): mixed
     {
-        $statement = (isset($this->before)) ? call_user_func($this->before, $this->statement, ...$beforeArgs) : $this->statement;
+        $statement = (isset($this->before)) ? call_user_func($this->before, clone $this->statement, ...$beforeArgs) : clone $this->statement;
 
         if (
             !$statement instanceof Select &&
