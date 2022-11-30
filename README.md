@@ -36,7 +36,8 @@ $driver = (new \CommandString\Pdo\Driver())
 (new Builder($driver))
     ->setOption(Builder::NAMESPACE, "CommandString\\Database") // change
     ->setOption(Builder::OUTPUT_DIR, __DIR__."/database") // change
-    ->database("database")
+    ->setOption(Builder::DATABASE, "Database")
+    ->build()
 ;
 ```
 
