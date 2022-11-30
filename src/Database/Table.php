@@ -6,6 +6,7 @@ use CommandString\Orm\Statements\Delete;
 use CommandString\Orm\Statements\Insert;
 use CommandString\Orm\Statements\Select;
 use CommandString\Orm\Statements\StorableStatement;
+use CommandString\Orm\Statements\Update;
 use CommandString\Orm\Traits\NeedPdoDriver;
 use CommandString\Pdo\Driver;
 use ReflectionClass;
@@ -63,6 +64,16 @@ abstract class Table {
     }
 
     /**
+     * Shorthand update
+     * 
+     * @return Update
+     */
+    public function update(): Update
+    {
+        return (new Update($this->driver))->table($this->name);
+    }
+
+    /**
      * Store statement
      *
      * @param StorableStatement $statement
@@ -84,5 +95,19 @@ abstract class Table {
     public function getStoredStatement(string $name): ?StorableStatement
     {
         return $this->storedStatements[$name] ?? null;
+    }
+
+    public function getColumns(bool $includeTablePrefix = false): array
+    {
+        $reflection = new ReflectionClass(get_called_class());
+        $constants = ($includeTablePrefix) ? $reflection->getConstants() : array_keys($reflection->getConstants());
+
+        $columns = [];
+
+        foreach ($constants as $name) {
+            $columns[] = strtolower($name);
+        }
+
+        return $columns;
     }
 }
