@@ -78,17 +78,18 @@ trait Where {
             if ($i) {
                 $query .= ($or) ? " OR" : " AND";
             } else {
+                $query .= " WHERE";
                 $i++;
             }
 
             $id = $this->generateId();
 
             if ($operator !== Operators::IN && $operator !== Operators::BETWEEN) {
-                $query .= ($not) ? " WHERE NOT $name $operator :$id" : " WHERE $name $operator :$id";
+                $query .= ($not) ? " NOT $name $operator :$id" : " $name $operator :$id";
                 
                 $this->addParam($id, $value);
             } else {
-                $query .= " WHERE $name $operator $value";
+                $query .= " $name $operator $value";
             }
         }
     }
